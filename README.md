@@ -12,3 +12,6 @@ curl http://127.0.0.1:3000/api/users
 curl -X POST http://127.0.0.1:3000/api/users
 # [{"id":1,"name":"小明","age":24},{"id":2,"name":"小红","age":19}]
 ```
+
+## 01-node-server-image
+
