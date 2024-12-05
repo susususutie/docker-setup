@@ -1,7 +1,6 @@
-import url from "node:url";
 import http from "node:http";
-import fs from "node:fs/promises";
-import { init, close, getItems, storeItem } from "./sqlite.js";
+import url from "node:url";
+import { getItems, init, storeItem } from "./sqlite.js";
 
 const setup = async () => {
   try {
@@ -27,20 +26,34 @@ const setup = async () => {
             return;
           }
           if (method === "POST") {
-            (async () => {
-               await storeItem({
-                id: Math.floor(Math.random() * 100000),
-                name: Math.random().toString(34),
-                male: Math.random() > 0.5,
-              });
-              const resData = await getItems();
+            let data;
+            req.on("data", (chunk) => {
+              data += chunk.toString();
+            });
+            req.on("end", () => {
+              console.log("data", data);
               try {
-                res.end(JSON.stringify(resData) + "\n");
+                const params = JSON.parse(data);
+                console.log(params);
+                (async () => {
+                  await storeItem({
+                    id: params.id || Math.floor(Math.random() * 100000),
+                    name: params.name || Math.random().toString(34),
+                    male: params.male || Math.random() > 0.5,
+                  });
+                  const resData = await getItems();
+                  try {
+                    res.end(JSON.stringify(resData) + "\n");
+                  } catch (error) {
+                    res.setHeader("Content-Type", "application/text");
+                    res.end("Error\n");
+                  }
+                })();
               } catch (error) {
-                res.setHeader("Content-Type", "application/text");
-                res.end("Error\n");
+                console.error(error);
               }
-            })();
+            });
+
             return;
           }
           console.log(method);
@@ -58,4 +71,4 @@ const setup = async () => {
   }
 };
 
-setup()
+setup();

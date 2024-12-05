@@ -1,6 +1,5 @@
-import sq3 from "sqlite3";
-import fs from "node:fs";
 import path from "node:path";
+import sq3 from "sqlite3";
 
 const sqlite3 = sq3.verbose();
 const dbFilePath = path.resolve("./user.db");

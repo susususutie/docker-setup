@@ -37,4 +37,15 @@ curl http://localhost
 
 ## 02-node-server-npm
 
-使用`node:lts-alpine`作为基础镜像构建, 将代码COPY进镜像里.
+使用`node:lts-alpine`作为基础镜像构建, 将代码COPY进镜像里. 通过`ENV`设置环境变量，优化corepack下载pnpm和pnpm下载依赖包的速度，同时使用`sqlite`数据库以实现数据持久化，
+
+```bash
+# 构建镜像
+docker build -t my-image01 .
+# 运行容器
+docker run -d --name my-container01 -p 3000:3000 my-image01
+# 测试连接
+curl http://localhost:3000/api/users
+# POST json 更改数据库测试
+curl -X POST -d '{"id":2,"name":"qwe","male":true}' http://localhost:3000/api/users
+```
