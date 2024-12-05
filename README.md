@@ -33,3 +33,8 @@ curl http://localhost
 ```
 
 由`my-image-test`镜像生成一个容器, 命名为`my-container-test`, 并将主机 80 端口映射到容器 3000 端口上, 因为镜像中 node 服务跑在 3000 端口. 然后打开`http://localhost/`即可访问容器的 node 服务.
+
+
+## 02-node-server-npm
+
+使用`node:lts-alpine`作为基础镜像构建, 将代码COPY进镜像里.
