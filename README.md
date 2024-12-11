@@ -50,3 +50,13 @@ curl http://localhost:3000/api/users
 # POST json 更改数据库测试
 curl -X POST -d '{"id":2,"name":"qwe","male":true}' http://localhost:3000/api/users
 ```
+
+## 04-node-express
+
+```bash
+npm i
+node app.js
+
+curl http://localhost:3000/
+# Hello World!
+```
