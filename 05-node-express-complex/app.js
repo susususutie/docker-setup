@@ -13,7 +13,7 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.json())
 app.use(cookieParser())
 // 设置静态文件目录，例如 public 文件夹
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')))
 // app.use(
 //   session({
 //     resave: false, // don't save session if unmodified
@@ -42,9 +42,9 @@ function error(status, msg) {
   return err
 }
 
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 
 app.use(['/ejs', '/ejs.html'], function (req, res) {
   res.render('ejs', { title: 'Hello World', message: 'This is a test message' })
@@ -80,7 +80,7 @@ app.use('/api', function (req, res, next) {
 // curl --cookie "auth-token=foo;" http://localhost:3000/api/users
 app.get('/api/users', function (req, res) {
   console.log('get /api/users')
-  res.send(users)
+  res.status(200).json(users)
 })
 
 // example:
@@ -127,12 +127,20 @@ app.post('/api/user/login', function (req, res, next) {
   const password = req.body.password
   // 模拟登录
   if (username === 'admin' && password === 'pwd') {
-    res.cookie('cookie-token', 'foo')
+    res.cookie('auth-token', 'foo')
     res.cookie('test', '123')
     res.cookie('demo', 'asd')
-    res.send('登陆成功！token=foo\n')
+    // res.redirect('/index.html');
+    res.status(200).json({
+      success: true,
+      message: '登陆成功',
+      data: 'foo',
+    })
   } else {
-    res.sendStatus(401)
+    res.status(401).json({
+      success: false,
+      message: '账密错误',
+    })
   }
 })
 

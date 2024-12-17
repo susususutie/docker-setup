@@ -1,11 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  index
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>首页</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        gap: 16px;
+        margin: 0;
+        padding: 24px;
+        flex-wrap: wrap;
+      }
+      h1 {
+        width: 100%;
+        text-align: center;
+      }
+      .panel {
+        border: 1px solid #ddd;
+        padding: 16px;
+        border-radius: 5px;
+        width: 400px;
+        h3 {
+          margin: 8px 0;
+        }
+      }
+      .panel button {
+        padding: 10px 20px;
+        margin-top: 10px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      .response {
+        margin-top: 16px;
+        padding: 12px;
+        background-color: #f4f4f4;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        height: 160px;
+        overflow: auto;
+        white-space: pre-wrap; /* 保持空格和换行 */
+        word-wrap: break-word; /* 长单词换行 */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Index</h1>
+
+    <div class="panel" id="panel1">
+      <h3>Panel 1 - GET Request</h3>
+      <button data-cookie data-method="GET" data-url="/api/users">Send Cookie</button>
+      <button data-header data-method="GET" data-url="/api/users">Send Header</button>
+      <button data-query data-method="GET" data-url="/api/users">Send Query</button>
+      <pre class="response"></pre>
+    </div>
+
+    <div class="panel" id="panel2">
+      <h3>Panel 2 - POST Request</h3>
+      <button data-method="POST" data-url="/api/users">Send Request</button>
+      <pre class="response"></pre>
+    </div>
+
+    <div class="panel" id="panel3">
+      <h3>Panel 3 - PUT Request</h3>
+      <button data-method="PUT" data-url="/api/users">Send Request</button>
+      <pre class="response"></pre>
+    </div>
+
+    <script>
+      const panels = document.querySelectorAll('.panel')
+      panels.forEach(panel => {
+        const buttons = panel.querySelectorAll('button')
+        const response = panel.querySelector('.response')
+
+        buttons.forEach(button => {
+          button.addEventListener('click', () => {
+            const method = button.dataset.method
+            let url = button.dataset.url
+
+            const cookieToken = 'cookie' in button.dataset
+            const headerToken = 'header' in button.dataset
+            const queryToken = 'query' in button.dataset
+
+            const credentials = cookieToken ? 'include' : 'omit'
+            const headers = {
+              'Content-Type': 'application/json',
+            }
+            if (headerToken) {
+              headers['Auth-Token'] = localStorage.getItem('token')
+            }
+
+            if (queryToken) {
+              url = url + `?token=${localStorage.getItem('token')}`
+            }
+
+            response.textContent = 'Loading...'
+
+            fetch(url, {
+              method: method,
+              credentials,
+              headers,
+            })
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok')
+                }
+                return response.json()
+              })
+              .then(data => {
+                response.textContent = JSON.stringify(data, null, 2)
+              })
+              .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error)
+                response.textContent = 'Error: ' + error.message
+              })
+          })
+        })
+      })
+    </script>
+  </body>
 </html>

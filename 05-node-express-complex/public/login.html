@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+      }
+      .login-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .login-container h2 {
+        text-align: center;
+      }
+      .login-form {
+        display: flex;
+        flex-direction: column;
+      }
+      .login-form input {
+        margin-bottom: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .login-form button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #5cb85c;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .login-form button:hover {
+        background-color: #4cae4c;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="login-container">
+      <h2>Login</h2>
+      <form id="loginForm" class="login-form">
+        <input type="text" id="username" placeholder="Username" required value="admin" />
+        <input type="password" id="password" placeholder="Password" required value="pwd" />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <script>
+      document.getElementById('loginForm').addEventListener('submit', event => {
+        event.preventDefault()
+
+        const username = document.getElementById('username').value
+        const password = document.getElementById('password').value
+
+        if (!username || !password) {
+          alert('Please fill out both fields.')
+          return
+        }
+
+        const loginData = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        }
+
+        // 使用fetch发起POST请求
+        fetch('/api/user/login', loginData)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok')
+            }
+            return response.json()
+          })
+          .then(data => {
+            if (data.success) {
+              localStorage.setItem('token', data.data)
+              window.location.href = '/'
+            } else {
+              alert(data.message)
+            }
+          })
+          .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error)
+            alert('Login failed!')
+          })
+      })
+    </script>
+  </body>
+</html>
