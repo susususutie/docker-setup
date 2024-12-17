@@ -1,10 +1,19 @@
 const express = require('express')
 // const session = require('express-session')
 const cookieParser = require('cookie-parser')
-
+const path = require('path')
 const app = express()
+
+// config
+
+app.set('view engine', 'ejs') // 必须安装ejs模块
+app.set('views', path.join(__dirname, 'views'))
+// middleware
+
 app.use(express.json())
 app.use(cookieParser())
+// 设置静态文件目录，例如 public 文件夹
+app.use(express.static(path.join(__dirname, 'public')));
 // app.use(
 //   session({
 //     resave: false, // don't save session if unmodified
@@ -32,6 +41,14 @@ function error(status, msg) {
   err.status = status
   return err
 }
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.use(['/ejs', '/ejs.html'], function (req, res) {
+  res.render('ejs', { title: 'Hello World', message: 'This is a test message' })
+})
 
 app.use('/api', function (req, res, next) {
   console.log('/api')

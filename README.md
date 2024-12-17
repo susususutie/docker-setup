@@ -75,5 +75,8 @@ curl http://localhost
 基于`express`的复杂 node server，示例来源于[express](https://expressjs.com/en/starter/examples.html)。
 
 ```bash
+# 开发
+npm i
+node --watch app.js
 
 ```
