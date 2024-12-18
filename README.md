@@ -63,7 +63,7 @@ curl http://localhost:3000/
 # build docker image
 docker build -t my-image00 .
 # 运行容器
-docker run -d --name my-container00 -p80:3000 my-image00
+docker run -d --name my-container00 -p 80:3000 my-image00
 # 测试连接
 curl http://localhost
 # Hello World!
@@ -78,5 +78,7 @@ curl http://localhost
 # 开发
 npm i
 node --watch app.js
-
+# build
+docker build -t my-image:dev .
+docker run -d --name my-container -p 80:3000 my-image:dev
 ```
