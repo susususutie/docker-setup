@@ -14,7 +14,8 @@
         padding: 24px;
         flex-wrap: wrap;
       }
-      h1 {
+      h1,
+      section {
         width: 100%;
         text-align: center;
       }
@@ -48,24 +49,23 @@
   </head>
   <body>
     <h1>Index</h1>
+    <section>
+      <a href="/logout.html">Logout</a>
+    </section>
 
-    <div class="panel" id="panel1">
-      <h3>Panel 1 - GET Request</h3>
+    <div class="panel">
+      <h3>Panel 1 - GET /api/users</h3>
       <button data-cookie data-method="GET" data-url="/api/users">Send Cookie</button>
       <button data-header data-method="GET" data-url="/api/users">Send Header</button>
       <button data-query data-method="GET" data-url="/api/users">Send Query</button>
       <pre class="response"></pre>
     </div>
 
-    <div class="panel" id="panel2">
-      <h3>Panel 2 - POST Request</h3>
-      <button data-method="POST" data-url="/api/users">Send Request</button>
-      <pre class="response"></pre>
-    </div>
-
-    <div class="panel" id="panel3">
-      <h3>Panel 3 - PUT Request</h3>
-      <button data-method="PUT" data-url="/api/users">Send Request</button>
+    <div class="panel">
+      <h3>Panel 2 - GET /api/repos</h3>
+      <button data-cookie data-method="GET" data-url="/api/repos">Send Cookie</button>
+      <button data-header data-method="GET" data-url="/api/repos">Send Header</button>
+      <button data-query data-method="GET" data-url="/api/repos">Send Query</button>
       <pre class="response"></pre>
     </div>
 

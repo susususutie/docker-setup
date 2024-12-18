@@ -12,8 +12,19 @@ app.set('views', path.join(__dirname, 'views'))
 
 app.use(express.json())
 app.use(cookieParser())
+
+app.get(['/', '/index.html'], function (req, res) {
+  const cookieToken = req.cookies['auth-token']
+  console.log(req.path)
+  if (!cookieToken && req.path !== '/login.html') {
+    res.redirect('/login.html')
+  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
+
 // 设置静态文件目录，例如 public 文件夹
 app.use(express.static(path.join(__dirname, 'public')))
+
 // app.use(
 //   session({
 //     resave: false, // don't save session if unmodified
@@ -42,17 +53,36 @@ function error(status, msg) {
   return err
 }
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
-})
+// authMiddleware.js
+// function isAuthenticated(req, res, next) {
+//   // 这里假设你有一个session或者某种方式来存储用户的登录状态
+//   // 例如，检查req.session中是否有user属性
+//   if (req.session && req.session.user) {
+//     // 用户已登录，继续执行下一个中间件或路由处理器
+//     return next();
+//   }
+//   // 用户未登录，重定向到登录页面
+//   res.redirect('/login.html');
+// }
+
+// // 使用上面创建的鉴权中间件
+// app.use(isAuthenticated);
 
 app.use(['/ejs', '/ejs.html'], function (req, res) {
   res.render('ejs', { title: 'Hello World', message: 'This is a test message' })
 })
 
+app.get('/logout.html', function (req, res) {
+  res.clearCookie('auth-token', { path: '/' })
+  res.send(
+    '<h1>Cookie cleared, go to <a href="/login.html">Login</a>, or go to <a href="/index.html">Home Page</a></h1>'
+  )
+})
+
 app.use('/api', function (req, res, next) {
   console.log('/api')
 
+  // 登录接口不鉴权
   if (req.path === '/user/login') {
     next()
     return
@@ -118,8 +148,10 @@ curl -X POST \
 app.post('/api/user/login', function (req, res, next) {
   console.log('post /api/user/login')
   if (!req.body) {
-    res.status(400)
-    res.send('请输入用户名和密码\n')
+    res.send(401).json({
+      success: false,
+      message: '请输入用户名和密码',
+    })
     return
   }
 
